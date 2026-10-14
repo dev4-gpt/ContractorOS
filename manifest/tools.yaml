@@ -1,0 +1,35 @@
+# CreatorOS tool manifest. Seeded 2026-10-14 from docs/storytold-audit.md and
+# creatoros-research.md. Versions are release tags seen at audit time.
+# host: mac | control-plane | sandbox | gpu-worker
+# status: audited | planned | unverified
+tools:
+  # --- Storytold Craft apps (Apache-2.0; READMEs mention MCP + CLI, unconfirmed hands-on)
+  - {name: photocraft,  kind: creative-app, repo: storytold/photocraft,  version: v0.8.2,  license: Apache-2.0, host: mac, status: audited, notes: "raster editor; early alpha"}
+  - {name: lightcraft,  kind: creative-app, repo: storytold/lightcraft,  version: v0.7.1,  license: Apache-2.0, host: mac, status: audited, notes: "RAW editor"}
+  - {name: filmcraft,   kind: creative-app, repo: storytold/filmcraft,   version: v0.7.2,  license: Apache-2.0, host: mac, status: audited, notes: "NLE; self-rated ~56% ready for real work"}
+  - {name: designcraft, kind: creative-app, repo: storytold/designcraft, version: v0.7.1,  license: Apache-2.0, host: mac, status: audited, notes: "page layout"}
+  - {name: vectorcraft, kind: creative-app, repo: storytold/vectorcraft, version: v0.10.0, license: Apache-2.0, host: mac, status: audited, notes: "vector illustration"}
+  - {name: pdfcraft,    kind: creative-app, repo: storytold/pdfcraft,    version: v0.7.1,  license: Apache-2.0, host: mac, status: audited, notes: "PDF reader/editor"}
+  - {name: effectcraft, kind: creative-app, repo: storytold/effectcraft, version: v0.9.2,  license: Apache-2.0, host: mac, status: audited, notes: "motion graphics/compositing"}
+  - {name: wordcraft,   kind: creative-app, repo: storytold/wordcraft,   version: v0.6.1,  license: Apache-2.0, host: mac, status: audited, notes: "word processor"}
+  - {name: deckcraft,   kind: creative-app, repo: storytold/deckcraft,   version: v0.6.1,  license: Apache-2.0, host: mac, status: audited, notes: "presentations"}
+  - {name: gridcraft,   kind: creative-app, repo: storytold/gridcraft,   version: v0.6.1,  license: Apache-2.0, host: mac, status: audited, notes: "spreadsheet"}
+  - {name: cadcraft,    kind: creative-app, repo: storytold/cadcraft,    version: v0.6.2,  license: Apache-2.0, host: mac, status: audited, notes: "CAD; maturity not stated"}
+  - {name: soundcraft,  kind: creative-app, repo: storytold/soundcraft,  version: v0.6.1,  license: Apache-2.0, host: mac, status: audited, notes: "DAW"}
+  - {name: figcraft,    kind: creative-app, repo: storytold/figcraft,    version: v0.5.1,  license: Apache-2.0, host: mac, status: audited, notes: "UI design; early alpha"}
+  - {name: craft-launcher, kind: launcher,  repo: storytold/craft-launcher, version: v0.4.1, license: Apache-2.0, host: mac, status: audited, notes: "installs/updates the apps; macOS universal DMG"}
+  - {name: craft-fonts, kind: assets,       repo: storytold/craft-fonts, version: none,   license: "Apache-2.0 (repo); inspect font files", host: mac, status: unverified, notes: "individual fonts may carry own licenses"}
+
+  # --- Tariff tools (Apache-2.0 per README; weights may differ)
+  - {name: wan2.2,      kind: model, repo: Wan-Video/Wan2.2, version: unpinned, license: Apache-2.0, host: gpu-worker, status: planned, notes: "TI2V-5B needs 24 GB; A14B needs 80 GB; T4 only via GGUF+offload"}
+  - {name: z-image-turbo, kind: model, repo: Tongyi-MAI/Z-Image, version: unpinned, license: Apache-2.0, host: gpu-worker, status: planned, notes: "fits 16 GB; first GPU job to prove"}
+  - {name: infinitetalk, kind: model, repo: MeiGen-AI/InfiniteTalk, version: unpinned, license: Apache-2.0, host: gpu-worker, status: unverified, notes: "base Wan2.1 + wav2vec2 licenses not stated; consent required for real faces"}
+  - {name: agent-tars,  kind: agent, repo: bytedance/UI-TARS-desktop, version: "cli v0.3.0", license: Apache-2.0, host: sandbox, status: planned, notes: "Node 22+, vision-model API key; Beta"}
+  - {name: deerflow,    kind: agent, repo: bytedance/deer-flow, version: "main-1.x (2.0 is a rewrite)", license: MIT, host: control-plane, status: planned, notes: "Py 3.12+, Node 22+, Tavily key; 4 vCPU/8 GB min"}
+  - {name: paddleocr,   kind: service, repo: PaddlePaddle/PaddleOCR, version: "3.7.0", license: Apache-2.0, host: control-plane, status: planned, notes: "CPU OK for basic OCR"}
+
+  # --- Infrastructure
+  - {name: cua,         kind: sandbox, repo: trycua/cua, version: unpinned, license: "MIT mostly; FSL-1.1-MIT (Spaces, Driver Bench); AGPL (cua-som)", host: sandbox, status: planned, notes: "self-hosted only; Lume needs Apple silicon; keep FSL/AGPL parts behind a service boundary"}
+  - {name: kipi-system, kind: memory, repo: assafkip/kipi-system, version: unpinned, license: MIT, host: control-plane, status: planned, notes: "markdown memory on Claude Code; benchmark vs Graphiti before adding a graph DB"}
+  - {name: locally-uncensored, kind: runtime, repo: PurpleDoubleD/locally-uncensored, version: v3.0.6, license: AGPL-3.0-only, host: mac, status: unverified, notes: "AGPL: use as a separate service, do not fork into a closed product; macOS beta"}
+  - {name: rea,         kind: reverse-engineering, repo: morluto/rea, version: unpinned, license: MIT, host: sandbox, status: unverified, notes: "star count implausible; run only in disposable sandbox on authorized targets; see docs/rea-policy.md (not yet written)"}
