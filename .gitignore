@@ -1,0 +1,17 @@
+# agent/tool state and local config
+.claude/
+.claude-flow/
+.swarm/
+.hive-mind/
+
+# secrets
+.env
+.env.*
+*.pem
+*.key
+
+# python / node / os
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
