@@ -114,13 +114,18 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 7. Duplication: three content factories exist; pick one.
 8. Vendor claims in the Notion pages and Keepy guide are unverified marketing.
 
-## 10. Decisions still needed
-1. Monorepo private, with `local-AgenticOS` kept separate? (recommended)
-2. VoiceAI folded in or integrated as a separate product? (recommended: separate)
-3. websitegenerator: ask Albert for permission or reimplement from the ideas? (recommended: reimplement)
-4. Which of the three content factories becomes the engine?
-5. Name: Reforge, Atelier, or other (availability unchecked).
-6. First paying audience: solo creators, agencies, or both?
+## 10. Decisions
+**Made (2026-10-16):**
+1. The combined repo is **public** (ContractorOS is already public). `local-AgenticOS` stays separate and private. Consequence: everything imported becomes public, including git history, so each import needs a secret scan first, and no prospect data, keys, client material, PDFs or scraped third-party content goes in.
+2. **VoiceAI is folded in** (MIT). Import without the PDFs and the agent-skill folders; keep its billing, consent and CRM code; scan history first.
+3. **websitegenerator is reimplemented from the ideas, not copied.** It is a fork of `albertshiney/websitegenerator` with no LICENSE file, so its code, template and message text stay out. Optional: ask Albert to add a license.
+4. First audience: **both** solo creators and small agencies.
+5. Outreach is assisted by default.
+
+**Still open:**
+1. Combined-repo license (recommended: Apache-2.0).
+2. Which of the three content factories becomes the engine.
+3. Name: Reforge, Atelier, or other (availability unchecked).
 
 ## 11. Not yet done
 Second code read of AgenticOS (~150 unread lib files, product-experience, workers), VoiceAI orchestrator, prospect-previews source, agentos execution proxy; no live test of any Craft app, REA, or HyperFrames; no external validation of vendor claims; Remotion license terms.
