@@ -10,7 +10,11 @@
 *.pem
 *.key
 
+# third-party documents kept locally for reference
+*.pdf
+
 # python / node / os
+.ruff_cache/
 __pycache__/
 *.pyc
 node_modules/
