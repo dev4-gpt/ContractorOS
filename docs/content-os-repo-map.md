@@ -1,59 +1,94 @@
-# Content OS: repo map and merge plan
-*Written 2026-10-16. Working name: Reforge (see naming options in chat). TokenForge is excluded; REA is used as an external tool.*
+# Content OS: repo map, overlap analysis and merge plan
+*Rewritten 2026-10-16 after reading code. Working name: Reforge. TokenForge excluded; REA used as an external tool. Nothing has been merged, archived or deleted yet.*
 
-**Depth of reading.** Code-level: wiza, prospect-previews, MetaScope (server routes), agentos (README, layout, sizes). Skill/doc-level: websitegenerator, ai-website-cloner. README/tree-level only: local-AgenticOS (1,406 files, 289 API route files not opened). GitHub's rate limit stopped further reads, so the local-AgenticOS column below must be re-checked in a second pass.
+## 0. How deeply each repo was read
+| Repo | What I read | Not read |
+|---|---|---|
+| wiza | All files (7) | n/a |
+| prospect-previews | README, package, config, source sizes | Source bodies of generate/extract/fetch (8 tests exist) |
+| MetaScope | server/routes.ts structure, README, tree | Client components, storage, schema |
+| websitegenerator | SKILL.md, references (production, outreach), settings.json, quick_site.py head, tool list | control.py, scout_screen.py, site_assets.py bodies; template React code |
+| ai-website-cloner | CLAUDE.md, clone-website skill, package.json, tree, lead API route | Component code of the bundled demo site |
+| agentos | README, PRD head, MCP server, route list, layout | Tool execution proxy (~line 655), OAuth code, tests |
+| VoiceAI (StratosGTM) | README, tree, architecture summary | Orchestrator source, ARCHITECTURE.md, schema |
+| local-AgenticOS | README, package.json, 52 API route dirs (counted), `lib/` file list (178), and in full or in part: contentOsVideoPilot, contentStudio, webStudio, vault, vaultWriter, vaultGraph, outreach, leads, pipeline, integrationHub, videoProjects | The other ~150 lib files, the `product-experience` app, `workers/`, `infrastructure/`, tests |
+Clones were shallow and size-limited; large binaries were not fetched.
 
-## 1. What each repo really is
+## 1. What each repo is (verified)
+| Repo | Reality | License | Merge value | Problems |
+|---|---|---|---|---|
+| **wiza** | Zero-dependency Node UI + API. Simulation mode: in-memory character vault, fake generation, 4 hard-coded model entries (Wan 2.1, SkyReels-V2, Flux). Real backend only via `WAN_INFERENCE_ENDPOINT`. | MIT | Shot/character/camera data model and workstation UI; rewire to ComfyUI + Wan 2.2 | Not a working generator today |
+| **prospect-previews** | TS CLI, ~1.3k lines, 8 test files. Fetch (robots.txt, netguard, 3 pages max), human review, labeled static concept site, identified message, ledger, DNC, CRM hand-off. | MIT | **Keep nearly intact.** Its DNC ledger becomes the shared suppression list. | Discovery not built |
+| **MetaScope** | React + Express SEO tag analyzer (313-line routes file), Firebase + Flan-T5. | none stated (yours) | Little: `local-AgenticOS` already has a larger SEO pipeline (12 routes, ~1.4k lines, history, intelligence) | `/api/analyze` has no private-address guard (SSRF). **Recommend retiring, porting only social-preview logic if missing.** |
+| **websitegenerator** | **Fork of albertshiney/websitegenerator** (`upstream` remote). Codex skill + Python tools (~1.3k lines) + one Danish electrician template. Template fill (name/phone/email/color), Vercel deploy per prospect, ledger, dashboard, fixed outreach submitted through contact forms. | **No LICENSE file** | Ideas only (template-fill, ledger, scout screening) | Without a license you have no right to merge Albert's code or template. Outreach text and sender identity are his (`Albert Shiney`, his Vercel scope). Message has no opt-out. Do not merge as code; reimplement the ideas, or get his permission. |
+| **ai-website-cloner** (private) | Fork of JCodesMore's template. Scaffold (Next 16, shadcn) + agent skill for ~12 agent CLIs. The `src/` is a bundled demo site (editions/paintings), not generic. | MIT | The clone workflow (extract tokens/assets/behaviors per section, specs per component, parallel builders) as a skill | Contains `docs/research/www.shopify.com/` scraped content; do not carry over. Default policy is "pixel-perfect, no customization", so use in rebuild-with-own-assets mode. |
+| **agentos** (Python) | Small FastAPI tool registry (842-line server), MCP shim, SDK, CLI, seed schemas. The standalone MCP tool-call helper is a **stub** (returns "invoked with arguments"). **Not the same project as local-AgenticOS.** | MIT | Optional external-tool gateway (OAuth + semantic search for SaaS tools) | Prototype quality; overlaps `integrationHub` in local-AgenticOS only partly |
+| **VoiceAI / StratosGTM** | Real product: Express orchestrator, Neon Postgres, Stripe, AssemblyAI voice agent with 7 tools, AI-disclosure and recording-consent, CRM, ~40 test files incl. `contentFactoryEngine` and SSRF tests. | MIT | Voice front door and CRM for the Content OS; lead hand-off target | Repo is 29 MB mostly PDFs and agent-skill folders; own billing/tenancy. Has its **own content factory**. |
+| **local-AgenticOS** | Large Next.js app. State is files: Obsidian vault (`Agentic OS/Memories|Journal|Pipeline|Web Studio`), plus JSON under `~/.agentic-os`. Includes content studios (below). | none stated (yours) | The host, the memory, the agent hub | Heavy; public gate still closed |
 
-| Repo | What it actually is | Size / maturity | License | Reuse value | Main risk |
-|---|---|---|---|---|---|
-| **wiza** | Node (no deps) UI + API for a generative-video workstation: shot list, character vault, camera-rig controls, timeline. **Runs in simulation mode**; no model is called unless `WAN_INFERENCE_ENDPOINT` is set. In-memory data. | 7 files, ~1.7k lines, has tests | MIT | The UI concept and data model (shot, character, camera pose). Little else. | README promises far more than the code does; targets Wan 2.1 (we plan Wan 2.2) |
-| **ai-website-cloner** (private) | Fork of JCodesMore's MIT template: a Next.js 16 + shadcn scaffold plus an agent skill (`/clone-website`) duplicated for ~12 agent tools. The skill drives browser MCP, extracts CSS/assets per section and dispatches builder agents. | 89 files, Node >= 24 | MIT (upstream) | The extraction workflow and the "spec per component" method. The 12 duplicated agent-config folders are noise. | Default scope is "pixel-perfect, no customization". `docs/research/www.shopify.com/` holds scraped third-party articles and datasets. Do not carry that over. |
-| **MetaScope** | React + Express SEO meta-tag analyzer: fetch URL, Cheerio parse, score, social previews, AI suggestions (Hugging Face Flan-T5), Firebase auth/Firestore. | 81 files, Replit-era | not stated | Analysis logic and score UI as a "site audit" module. | `/api/analyze` fetches any user-supplied URL with only `new URL()` validation, so it can be pointed at internal addresses (SSRF). Old stack (Firebase, Flan-T5). |
-| **websitegenerator** | A Codex skill, not an app: find weak local-business sites, fill an electrician template (Danish content), deploy to Vercel, **submit the contact forms automatically**, with a ledger and a dashboard (`tools/control.py`, port 4310). | 96 files | not stated | Template-fill pipeline, ledger concept, parallel-worker coordination notes. | Autonomous mass form submission with a fixed message and "skip CAPTCHAs". The skill and `settings.json` name **Albert Shiney / albert@shiney.ai** and a Vercel scope `albertshineys-projects`. Confirm whether that is a copied skill or an alias. |
-| **prospect-previews** | TypeScript CLI (~1.3k lines, 8 test files): fetch public details politely, human reviews, generate a labeled concept site, write an identified outreach message, ledger with do-not-contact, hand replies to a CRM. | v0.1.0, tests present | MIT | **Highest.** The compliance model (robots.txt, netguard against private IPs, source-per-fact, no invented content, one contact per business, opt-out) is exactly what a famous product needs. | Discovery and weak-site judging are deliberately not built |
-| **agentos** (GitHub) | Python FastAPI tool registry + MCP server + SDK/CLI: semantic tool search, OAuth2 flows, execution proxy, audit log. 5 SaaS integrations (Slack, Stripe, GitHub, Notion, Linear) plus Trello/Discord-style tool schemas. | ~1.5k lines in 5 core files, PRD, tests, Dockerfile | LICENSE present | The registry plus MCP layer becomes the Content OS tool gateway and replaces `manifest/tools.yaml` over time. | Python, while most other pieces are TypeScript |
-| **local-AgenticOS** (README level) | "Veloce AgenticOS": local dashboard (Next.js, `src/app/api`) with Obsidian memory, agent hub (Claude, Codex, Hermes, OpenClaw, Kimi), voice (Jarvis), Paperclip company org, **content studios already inside**: Thumbnail, Video (+ avatars), Music (Suno), Open Design, OpenMontage, Radar (news to content ideas), Leads (Hunter/Apollo/Firecrawl), Web Studio. Also tenants, billing (BYOK vs managed wallet, $2,500 setup + $1,250/mo), Supabase, Stripe skills. | 1,406 files, heavy docs | not checked | Memory, agent hub, auth/tenancy and several studios already exist | Complexity; a public-production gate is still closed per its own README |
+## 2. What local-AgenticOS already does (do not rebuild)
+| Capability | Where | Size (lines) | Content OS decision |
+|---|---|---|---|
+| Memory/knowledge | `vault*.ts`: markdown search, daily memories, journal, wikilink graph | ~780 | **Reuse as the one shared memory.** Content OS writes to `Agentic OS/Content OS/`. No second memory. |
+| Pipeline (idea to shipped, one human gate) | `pipeline.ts` | 573 | Reuse for approval flow |
+| Video | `videoProjects`, HyperFrames render jobs, HeyGen, voices (14 routes) | ~1,500 | Keep; add **real generative video** (Wan 2.2 via ComfyUI) behind it |
+| Content factory | `contentStudio.ts`, `hermesContentFactory`, `contentOsVideoPilot` (a manual-pilot **Content OS** already named here) | ~500 | **Three content factories exist** (this, VoiceAI's, plus the pilot). Pick one engine. |
+| SEO | 12 routes, `seo*.ts`, history, intelligence | ~1,400 | Replaces MetaScope |
+| Leads + outreach | `leads.ts` (Hunter/Apollo/CSV, scoring), `outreach.ts` (email validation, 25/day cap, bounce circuit-breaker, opt-out, STOP handling) | ~1,100 | Reuse; this is already a responsible sender. Add the concept-site step. |
+| Web Studio | `webStudio.ts`: project folders, brief and prompt library | ~170 | Extend with cloner workflow and template fill |
+| Thumbnails, music, OpenDesign, OpenMontage, radar, social research, translate, speech | various | ~1,500 | Keep as is |
+| Integrations (Plausible, Supabase, Cal.com, Listmonk, Ghost, Stirling PDF, Penpot) | `integrationHub.ts` | 247 | Already covers some tools we planned |
 
-Note: the local folder `~/Documents/Codex/Projects/AgentOS` is the AgenticOS install guide, not the `agentos` GitHub repo.
+## 3. Genuinely new (what the Content OS adds)
+1. **Research and reverse engineering**: REA client, competitor-platform intake, structured feature/UX/pricing notes written to the vault.
+2. **Content asset database**: `Asset`, `Version`, `Lineage`, `Source{url, license, authorized}`. Markdown stays the source of truth in the vault; a small index (SQLite) makes lineage queries fast.
+3. **Real media engines**: GPU workers (ComfyUI), Z-Image, Wan 2.2, InfiniteTalk, PaddleOCR, and the 13 Craft apps behind MCP/CLI.
+4. **Concept-site step before outreach**: prospect-previews generation, feeding the existing outreach engine.
+5. **Shared suppression list**: one do-not-contact store used by `outreach.ts`, prospect-previews and VoiceAI. This is what actually prevents duplicate contacts.
+6. **Cloner/site rebuild workflow** and template library (own templates).
 
-## 2. Overlap with local-AgenticOS (needs the second pass)
-Already in AgenticOS by README: memory (Obsidian), agent hub, thumbnails, video + avatars, music, design studio, news radar, lead finding, web studio, tenants/billing.
-Not found there by README: competitor/platform analysis (REA, MetaScope), site cloning, a content asset database with versions and lineage, the 13 Craft apps, Tariff models on GPU workers, compliant outreach.
-So the Content OS adds: **research/reverse-engineering, a content database, real media engines, and compliant distribution**, and **reuses** AgenticOS memory, auth and agent hub.
+## 4. Shared-memory contract (prevents duplicates)
+- Root: the existing vault, subfolder `Agentic OS/Content OS/` with `Assets/`, `Sources/`, `Briefs/`, `Runs/`, `Suppression.md`.
+- Every artifact is a markdown note with front matter: `id`, `kind`, `source`, `license`, `parent`, `tool`, `created` (ISO date), plus wikilinks. The existing graph view then shows lineage for free.
+- Before creating anything, a module queries the vault by content hash and source URL. A hit returns the existing asset (the dedupe rule).
+- Both products use the same vault path and the same suppression file.
 
-## 3. Target shape (one monorepo, shared memory with AgenticOS)
-
+## 5. Target layout
 ```
-reforge/                      # replaces ContractorOS repo
+reforge/
   packages/
-    core/          asset + version + lineage schema, job queue client, memory adapter
-    research/      metascope (audit), rea client, deerflow, competitor-intake workflow
-    web/           cloner workflow, site templates, template-fill generator, preview hosting
-    outreach/      prospect-previews (kept intact), ledger, CRM hand-off
-    studio-video/  wiza UI -> real ComfyUI/Wan 2.2 backend on GPU workers
-    studio-media/  Craft apps (MCP/CLI), Z-Image, InfiniteTalk, PaddleOCR
-    gateway/       agentos registry + MCP server (tool discovery for all packages)
-    adapters/agenticos/   shared memory + agent-hub bridge
+    core/        vault contract, asset/lineage index, hashing/dedupe
+    research/    rea client, competitor intake, site audit hooks
+    web/         cloner skill, own template library, concept-site generator
+    outreach/    prospect-previews (concept site, ledger) + shared suppression
+    studio/      Wan 2.2 / Z-Image / InfiniteTalk / PaddleOCR clients, Craft app wrappers
+    voice/       StratosGTM integration (lead hand-off, consent log)
+    gateway/     agentos registry (optional)
+  adapters/agenticos/   bridge to local-AgenticOS
   infra/  manifest/  docs/
 ```
-Shared data model (minimum): `Asset{id, kind, uri, hash}`, `Version{asset, parent, tool, params, created}`, `Lineage` edges, `Source{url, license, authorized}`. Every module reads and writes through `core` and logs to the shared memory.
 
-## 4. Decisions needed from you
-1. **Outreach policy.** Keep `prospect-previews` rules (human reviews and sends, labeled concept site, identified sender, opt-out) as the product default. Treat `websitegenerator`'s autonomous form submission as out of scope. Mass unsolicited submissions risk site-terms and messaging-law violations, and one incident would hurt a product meant to be famous.
-2. **Cloner policy.** Allow cloning only for sites you own or are authorized to study, or use it in "learn structure, rebuild with your own assets" mode. Never ship third-party content (drop the Shopify research folder).
-3. **Identity.** Replace every hardcoded sender/Vercel identity with config.
-4. **Language.** TypeScript core with the Python `agentos` gateway as a service, or port the gateway. I recommend keeping it a separate service.
-5. **Is VoiceAI (a lead-qualifying voice agent) in scope?** Prospect-previews is built to hand leads to a voice agent like it.
+## 6. Decisions already made
+- Assisted outreach is the default: the system drafts and builds, a person reviews and sends.
+- Include open-source tools broadly; the policy only governs how messages are sent.
+- VoiceAI is in scope. TokenForge is out. REA is used as an external tool, sandboxed.
+- Archive old repos on GitHub and delete **only local copies**, after your confirmation.
 
-## 5. Merge and deletion plan
-1. Create the monorepo from `ContractorOS`. Import each repo with **git history preserved** (subtree or filter-repo), so nothing is lost.
-2. Port in this order: `core` -> `outreach` (prospect-previews, nearly drop-in) -> `research` (MetaScope with a netguard fix) -> `web` -> `gateway` -> `studio-video` (real backend) -> `adapters/agenticos`.
-3. For each ported module: tests pass in the monorepo, then the old repo's README points to the new location.
-4. **Archive, don't delete.** Archiving is reversible; deleting is not and loses history and stars. Delete only after the module has run in the monorepo for a while and you have a backup (private mirror).
-5. Never delete `local-AgenticOS`; it stays a separate product that consumes the Content OS.
+## 7. Open problems found
+1. **websitegenerator license**: none. Get Albert's permission or reimplement from scratch.
+2. **Three content factories** (AgenticOS, StratosGTM, the pilot): choose one engine and make the others call it.
+3. **SSRF** in MetaScope; use prospect-previews' network guard anywhere a user URL is fetched.
+4. **Scraped third-party content** inside ai-website-cloner (Shopify); excluded.
+5. **Prospect data and consent**: any lead data from Hunter/Apollo/forms must stay out of this public repo.
+6. **Public repo**: ContractorOS is public. Merging private repos (ai-website-cloner, local-AgenticOS) into it would expose them. Make the monorepo private first, or keep AgenticOS separate (recommended).
 
-## 6. Next steps
-- Second pass on local-AgenticOS: list its content routes (`src/app/api`), the memory interface, auth/tenancy and the studios' backends. Needs the GitHub rate limit to reset.
-- Write the shared schema (`packages/core`) and a one-page PRD.
-- Pick the first end-to-end slice (suggested: audit a site with MetaScope-style analysis, generate a labeled concept site, produce an outreach draft for human review).
+## 8. Archive and delete plan (needs your explicit go-ahead at each step)
+Order: port a module into the monorepo with history, run its tests there, then archive its GitHub repo, then delete only the local copy.
+Candidates to archive: wiza, prospect-previews, MetaScope, ai-website-cloner, websitegenerator (your fork only; Albert's original is untouched), VoiceAI (if you decide to fold it in; I recommend keeping it separate as a product), agentos (optional).
+**Never** touch: local-AgenticOS, the local `~/Documents/Codex/Projects/AgentOS` folder (that is the AgenticOS install guide), or the monorepo.
+Local copies that would be deleted: `~/Developer/wiza`, `~/Developer/prospect-previews`, plus my scratchpad clones. Nothing is deleted until you confirm the exact list.
+
+## 9. Next steps
+1. You confirm: monorepo private? VoiceAI folded in or kept separate? websitegenerator: ask Albert or reimplement?
+2. Build `packages/core` (vault contract + dedupe) and port prospect-previews first.
+3. Second read pass on what I did not open: the rest of AgenticOS `lib/`, `product-experience`, VoiceAI orchestrator, prospect-previews source bodies.
