@@ -137,7 +137,7 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 - Leads and PII stay in the StratosGTM Postgres CRM; the vault holds only Signals with contact IDs, never personal data.
 
 **Still open:**
-1. ~~Combined-repo license~~ **Decided 2026-10-16: Apache-2.0** (`LICENSE` at the repo root, `license` set in each package). Code ported from MIT repos (prospect-previews, VoiceAI) must keep its original MIT notice in a third-party notices file.
+1. ~~Combined-repo license~~ **Decided 2026-10-16: Apache-2.0** (`LICENSE` at the repo root, `license` set in each package). `prospect-previews` is the author's own MIT code (Copyright 2026 Aryaman Singh Dev), so it was relicensed Apache-2.0 on porting, with provenance noted in `packages/outreach/src/index.ts`. Third-party code the author does not own must keep its original notice in a third-party notices file; check VoiceAI's copyright holder before porting anything from it.
 2. Name: Reforge, Atelier, or other (availability unchecked).
 3. Model provider defaults: keep model choice pluggable (the factory takes an `AgentRunner`; VoiceAI's DeepSeek harness is not ported).
 

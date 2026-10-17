@@ -41,9 +41,10 @@ export function normalizeIdentifier(type: SuppressionType, value: string): strin
     return email;
   }
   if (type === "phone") {
+    // Last ten digits, so "+1 (555) 010-2222", "555.010.2222" and "15550102222" all match.
     const digits = trimmed.replace(/\D/g, "");
-    if (digits.length < 5) throw new Error(`not a phone number: ${value}`);
-    return digits;
+    if (digits.length < 7) throw new Error(`not a phone number: ${value}`);
+    return digits.slice(-10);
   }
   const domain = domainOf(trimmed);
   if (FREE_MAIL.has(domain)) throw new Error(`refusing to suppress a shared mail domain: ${domain}`);

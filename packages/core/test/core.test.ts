@@ -99,6 +99,7 @@ describe("Suppression", () => {
     expect((await list.check({ email: "sales@acme.example" })).matches).toEqual(["domain"]);
     expect((await list.check({ website: "acme.example" })).matches).toEqual(["domain"]);
     expect((await list.check({ phone: "15550102222" })).matches).toEqual(["phone"]);
+    expect((await list.check({ phone: "555.010.2222" })).matches).toEqual(["phone"]);
     expect((await list.check({ email: "someone@other.example", phone: "999999999" })).blocked).toBe(false);
 
     const text = await readFile(suppressionFile(root), "utf8");
