@@ -85,6 +85,27 @@ describe("GraphifyIndex", () => {
     expect(calls).toHaveLength(9);
   });
 
+  it("uses another backend without an ollama model name unless one is given", async () => {
+    const { vault, workDir, calls } = setup();
+    await put(path.join(vault, "a.md"), "alpha");
+    const exec: Exec = async (cmd, args, opts) => {
+      calls.push({ cmd, args });
+      if (args[0] === "cluster-only") await put(path.join(opts.cwd ?? workDir, "graphify-out", "graph.json"), "{}");
+      return { stdout: "", stderr: "" };
+    };
+    const base = { vaultRoot: vault, workDir, bin: process.execPath, maxSourceBytes: 15, exec };
+
+    await new GraphifyIndex({ ...base, backend: "claude-cli" }).build();
+    const extract = calls.find((c) => c.args[0] === "extract")!.args;
+    expect(extract[extract.indexOf("--backend") + 1]).toBe("claude-cli");
+    expect(extract).not.toContain("--model");
+
+    calls.length = 0;
+    await new GraphifyIndex({ ...base, backend: "claude-cli", model: "haiku" }).build({ force: true });
+    const withModel = calls.find((c) => c.args[0] === "extract")!.args;
+    expect(withModel[withModel.indexOf("--model") + 1]).toBe("haiku");
+  });
+
   it("queries a built graph and reports setup problems", async () => {
     const { vault, index } = setup();
     await put(path.join(vault, "a.md"), "alpha");

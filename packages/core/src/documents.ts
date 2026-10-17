@@ -33,6 +33,8 @@ export interface GraphifyOptions {
   /** Staged corpus and graph output. Keep it outside the vault. Not AgenticOS's folder: its stage step wipes it. */
   workDir?: string;
   bin?: string;
+  /** Graphify extraction backend. Default "ollama". "claude-cli" uses the claude CLI login instead (no download). */
+  backend?: string;
   model?: string;
   /** Where the Obsidian export goes. Defaults to "<vault>/Agentic OS/Content OS/Graphify". */
   exportDir?: string;
@@ -69,6 +71,8 @@ export class GraphifyIndex {
   readonly graphPath: string;
   private readonly bin: string;
   private readonly model: string;
+  private readonly backend: string;
+  private readonly modelArg: string | undefined;
   private readonly exportDir: string;
   private readonly maxBytes: number;
   private readonly exec: Exec;
@@ -79,6 +83,9 @@ export class GraphifyIndex {
     this.graphPath = path.join(this.workDir, "graphify-out", "graph.json");
     this.bin = options.bin ?? path.join(os.homedir(), ".local", "bin", "graphify");
     this.model = options.model ?? process.env.GRAPHIFY_OLLAMA_MODEL ?? "qwen3.5:4b";
+    this.backend = options.backend ?? "ollama";
+    // Only the ollama backend needs a model name by default; other backends choose their own.
+    this.modelArg = options.model ?? (this.backend === "ollama" ? this.model : undefined);
     this.exportDir = options.exportDir ?? path.join(options.vaultRoot, DEFAULT_NAMESPACE, "Graphify");
     this.maxBytes = options.maxSourceBytes ?? DEFAULT_MAX_BYTES;
     this.exec = options.exec ?? defaultExec;
@@ -166,8 +173,8 @@ export class GraphifyIndex {
     await this.run([
       "extract", this.corpusDir,
       "--out", this.workDir,
-      "--backend", "ollama",
-      "--model", this.model,
+      "--backend", this.backend,
+      ...(this.modelArg ? ["--model", this.modelArg] : []),
       "--max-concurrency", "1",
       "--token-budget", process.env.GRAPHIFY_TOKEN_BUDGET ?? "2500",
       "--api-timeout", "120",
