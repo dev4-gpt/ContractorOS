@@ -137,9 +137,11 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 - Leads and PII stay in the StratosGTM Postgres CRM; the vault holds only Signals with contact IDs, never personal data.
 
 **Still open:**
-1. Combined-repo license (recommended: Apache-2.0).
+1. ~~Combined-repo license~~ **Decided 2026-10-16: Apache-2.0** (`LICENSE` at the repo root, `license` set in each package). Code ported from MIT repos (prospect-previews, VoiceAI) must keep its original MIT notice in a third-party notices file.
 2. Name: Reforge, Atelier, or other (availability unchecked).
-3. Model provider defaults: VoiceAI's executor uses DeepSeek via a harness; keep model choice pluggable.
+3. Model provider defaults: keep model choice pluggable (the factory takes an `AgentRunner`; VoiceAI's DeepSeek harness is not ported).
+
+**Factory status (2026-10-16):** `packages/factory` has the contract (stages, idempotent workflow id, approval bound to one workflow), the `AgentRunner` and `ResearchProvider` plug-in points, deterministic checks, and a verify-and-repair loop that stops at human approval. VoiceAI's executor was reviewed and not ported: two of its three research lanes are hard-coded fake sources, its fallback content contains invented claims, and its "self-healing" truncates text while logging a model rewrite.
 
 ## 11. Not yet done
 Second code read of AgenticOS (~150 unread lib files, product-experience, workers), VoiceAI orchestrator, prospect-previews source, agentos execution proxy; no live test of any Craft app, REA, or HyperFrames; no external validation of vendor claims; Remotion license terms.
