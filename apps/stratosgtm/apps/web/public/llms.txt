@@ -1,0 +1,39 @@
+# StratosGTM
+
+> A browser voice agent that answers a website around the clock, qualifies the visitor out loud, and writes the lead into a CRM while the call is still going — with US AI-disclosure and recording-consent rules built in. Built on the AssemblyAI Voice Agent API.
+
+## What it does
+
+- Answers in voice, in the browser. A visitor clicks, speaks, and is heard. No phone number, no download.
+- Takes real actions mid-conversation. The agent calls tools as it talks — creating the lead, recording budget, authority, need and timeline, and capturing a consultation request — and those land in a Postgres-backed CRM.
+- Handles US disclosure and consent before it listens. It tells the visitor they are talking to an AI, and in the 13 all-party-consent states (CA, CT, DE, FL, IL, MD, MA, MI, MT, NV, NH, PA, WA) it asks permission before anything is transcribed, then keeps an append-only consent record. When the visitor's location is unknown, the strictest policy applies.
+- Embeds on any site with one script tag.
+
+## How it works
+
+- The server mints a short-lived AssemblyAI token; the API key never reaches the browser.
+- The browser streams 24 kHz mono PCM16 audio directly to the AssemblyAI Voice Agent API over a WebSocket.
+- Seven tools are registered with the agent: create_or_update_lead, qualify_lead, enrich_prospect_dossier, schedule_growth_consultation, get_product_knowledge, process_retention_offer, run_content_factory.
+- Each tool call executes on the server and its result returns to the agent, so it keeps talking with real data.
+- Stack: React 18 + Vite frontend, Node/Express orchestrator, Neon Postgres via Drizzle, Stripe Checkout, deployed on Vercel.
+
+## Pricing
+
+- Starter: $149/month ($119/month billed annually), 500 voice minutes, $0.30/min overage
+- Pro: $449/month ($359/month billed annually), 1,500 voice minutes, $0.25/min overage
+- Enterprise: $1,497/month ($1,197/month billed annually), 5,000 voice minutes, $0.20/min overage
+
+## Current limitations
+
+- No multi-tenant login yet.
+- Usage metering is not yet wired to live calls.
+- Consultation bookings are recorded on the lead; there is no calendar integration.
+- No latency figures are claimed.
+- The US compliance layer is an engineering implementation of published statutes, not legal advice.
+
+## Links
+
+- [Product overview](https://stratosgtm.vercel.app/)
+- [Pricing](https://stratosgtm.vercel.app/pricing)
+- [Live voice console](https://stratosgtm.vercel.app/console)
+- [Source code and README](https://github.com/dev4-gpt/VoiceAI)

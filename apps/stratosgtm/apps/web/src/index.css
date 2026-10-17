@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html.dark body {
+    background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, rgba(8, 12, 20, 1) 65%);
+  }
+}
+
+/* Custom Scrollbar (console only) */
+html.dark ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 22, 38, 0.5);
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 9999px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@voice-os/evals",
+  "version": "1.0.0",
+  "description": "Eval harness CLI for Voice OS. The engine (tasks, graders, stats, runner) lives in apps/orchestrator/src/evals so the server can run and store evals; this package is the command line entry point.",
+  "main": "src/cli.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "ts-node --transpile-only src/cli.ts --offline",
+    "eval:offline": "ts-node --transpile-only src/cli.ts --offline",
+    "eval": "ts-node --transpile-only src/cli.ts"
+  },
+  "dependencies": {
+    "@voice-os/shared": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

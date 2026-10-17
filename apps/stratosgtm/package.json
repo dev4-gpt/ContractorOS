@@ -1,0 +1,31 @@
+{
+  "name": "stratosgtm-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Growth Operator Voice OS for the AssemblyAI Voice Agent Hackathon on lablab.ai",
+  "scripts": {
+    "dev:orchestrator": "npm --prefix apps/orchestrator run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "test:evals": "npm --prefix packages/evals test",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "keywords": [
+    "assemblyai",
+    "voice-agent",
+    "hackathon",
+    "lablab-ai",
+    "rag",
+    "evals",
+    "docker"
+  ],
+  "author": "StratosGTM Team",
+  "license": "MIT",
+  "devDependencies": {
+    "drizzle-orm": "^0.45.2"
+  }
+}

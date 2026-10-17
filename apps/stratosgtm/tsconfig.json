@@ -1,0 +1,17 @@
+{
+  "//": "Root config for the Vercel serverless function in api/. Mirrors apps/orchestrator/tsconfig.json so the same source typechecks identically in both places. Each app keeps its own tsconfig for local builds.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "include": ["api/**/*", "apps/orchestrator/src/**/*"],
+  "exclude": ["node_modules", "apps/orchestrator/src/__tests__/**/*", "apps/web"]
+}
