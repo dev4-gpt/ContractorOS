@@ -1,0 +1,21 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace apps/web",
+  "outputDirectory": "apps/web/dist",
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "apps/orchestrator/src/public/**",
+      "maxDuration": 60
+    }
+  },
+  "redirects": [
+    { "source": "/product", "destination": "/", "permanent": true },
+    { "source": "/product/", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/embed.js", "destination": "/api" },
+    { "source": "/widget-preview", "destination": "/api" }
+  ]
+}

@@ -1,0 +1,327 @@
+<meta charset="utf-8">
+<title>StratosGTM architecture</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --surface-2: #eaeff3;
+    --ink: #13202b;
+    --muted: #55626e;
+    --line: #c9d3db;
+    --accent: #2340d9;
+    --real: #12784a;
+    --real-tint: #e2f3ea;
+    --conf: #9a5b00;
+    --conf-tint: #fbefd9;
+    --sim: #6b3fa0;
+    --sim-tint: #efe7f8;
+    --none: #6a7480;
+    --none-tint: #eceff2;
+    --font-head: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0d141a;
+      --surface: #141d25;
+      --surface-2: #1b2732;
+      --ink: #e6edf2;
+      --muted: #9aa9b5;
+      --line: #2a3945;
+      --accent: #8da2ff;
+      --real: #4fd08d;
+      --real-tint: #12291f;
+      --conf: #f0b458;
+      --conf-tint: #2c2412;
+      --sim: #c3a0f0;
+      --sim-tint: #251d33;
+      --none: #93a0ac;
+      --none-tint: #1c252d;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d141a;
+    --surface: #141d25;
+    --surface-2: #1b2732;
+    --ink: #e6edf2;
+    --muted: #9aa9b5;
+    --line: #2a3945;
+    --accent: #8da2ff;
+    --real: #4fd08d;
+    --real-tint: #12291f;
+    --conf: #f0b458;
+    --conf-tint: #2c2412;
+    --sim: #c3a0f0;
+    --sim-tint: #251d33;
+    --none: #93a0ac;
+    --none-tint: #1c252d;
+  }
+
+  body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--font-body); padding-inline: 16px; padding-block: 28px 56px; }
+  .wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 40px; }
+  h1, h2, h3 { font-family: var(--font-head); font-weight: 600; letter-spacing: 0.005em; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.05; }
+  h2 { font-size: 22px; line-height: 1.2; }
+  h3 { font-size: 17px; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 62ch; font-size: 17px; margin-top: 12px; }
+  .verified { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 20px; }
+  .pill { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 9px; border-radius: 4px; border: 1px solid currentColor; }
+  .p-real { color: var(--real); background: var(--real-tint); }
+  .p-conf { color: var(--conf); background: var(--conf-tint); }
+  .p-sim { color: var(--sim); background: var(--sim-tint); }
+  .p-none { color: var(--none); background: var(--none-tint); }
+
+  figure { margin: 0; }
+  .diagram { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 12px; }
+  .diagram svg { display: block; min-width: 860px; width: 100%; height: auto; }
+  figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; max-width: 70ch; }
+
+  svg text { font-family: var(--font-body); fill: var(--ink); }
+  svg .t { font-size: 12.5px; font-weight: 500; }
+  svg .s { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em; }
+  svg .h { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; fill: var(--muted); }
+  svg .note { font-size: 11px; fill: var(--muted); }
+  svg .zone { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 5 4; }
+  svg .flow { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  svg .soft { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  svg .head { fill: var(--accent); }
+  svg .st-real { fill: var(--real); }
+  svg .st-conf { fill: var(--conf); }
+  svg .st-none { fill: var(--none); }
+  svg .node { stroke-width: 1; }
+  svg .n-real { fill: var(--real-tint); stroke: var(--real); }
+  svg .n-conf { fill: var(--conf-tint); stroke: var(--conf); }
+  svg .n-none { fill: var(--none-tint); stroke: var(--none); stroke-dasharray: 4 3; }
+  svg .n-plain { fill: var(--surface-2); stroke: var(--line); }
+
+  .flows { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 18px; }
+  .card { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px; display: grid; gap: 12px; align-content: start; }
+  .card ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+  .card li::marker { font-family: var(--font-mono); color: var(--accent); font-size: 13px; }
+  .card .foot { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 18px; }
+  ul.plain { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  ul.plain li { padding-left: 16px; position: relative; }
+  ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 2px; background: var(--muted); }
+  .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 18px; }
+  .case { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; background: var(--surface); display: grid; gap: 6px; align-content: start; }
+  .case b { font-family: var(--font-head); font-weight: 600; font-size: 16px; }
+  .case span { color: var(--muted); font-size: 13.5px; }
+  footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 13px; display: grid; gap: 6px; }
+  code { font-family: var(--font-mono); font-size: 0.92em; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">System architecture</div>
+    <h1>StratosGTM architecture</h1>
+    <p class="lede">How a voice call becomes a lead, and a lead becomes a post. Every part is marked by how real it is today, so nothing here is a promise.</p>
+    <p class="verified">Checked against repo commit db8d776 and the live app on 2026-09-26.</p>
+    <div class="legend" aria-label="Status legend">
+      <span class="pill p-real">Real</span>
+      <span class="pill p-conf">Real when configured</span>
+      <span class="pill p-sim">Simulated</span>
+      <span class="pill p-none">Not built</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="diagram-h">
+    <h2 id="diagram-h">End to end</h2>
+    <figure style="margin-top:16px">
+      <div class="diagram">
+        <svg viewBox="0 62 1000 552" role="img" aria-label="Architecture: the visitor's browser talks to AssemblyAI for live audio and to the orchestrator on Vercel for tokens and tools. The orchestrator writes leads to Postgres, calls DeepSeek, and publishes through TryPost to Bluesky.">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="ahs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker>
+          </defs>
+
+          <text class="h" x="20" y="118">BROWSER</text>
+          <text class="h" x="252" y="118">ORCHESTRATOR ON VERCEL</text>
+          <text class="h" x="630" y="118">SERVICES</text>
+          <text class="h" x="830" y="118">PUBLISHING</text>
+          <rect class="zone" x="236" y="100" width="352" height="458" rx="8"/>
+
+          <path class="soft" d="M170 132 V88 H715 V132" marker-end="url(#ahs)"/>
+          <text class="note" x="330" y="80">live audio goes browser to AssemblyAI directly</text>
+
+          <rect class="node n-plain" x="20" y="132" width="178" height="46" rx="6"/>
+          <text class="t" x="32" y="152">Visitor's browser</text>
+          <text class="s" x="32" y="167" style="fill:var(--muted)">MIC AND SPEAKERS</text>
+
+          <rect class="node n-conf" x="20" y="196" width="178" height="46" rx="6"/>
+          <text class="t" x="32" y="216">Console, embed.js</text>
+          <text class="s st-conf" x="32" y="231">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="20" y="492" width="178" height="46" rx="6"/>
+          <text class="t" x="32" y="512">Keys and publish panel</text>
+          <text class="s st-conf" x="32" y="527">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="132" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="152">Call token, consent, usage gate</text>
+          <text class="s st-conf" x="264" y="167">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="192" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="212">Seven CRM tools, guardrails</text>
+          <text class="s st-conf" x="264" y="227">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="252" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="272">CRM: leads, members, consent</text>
+          <text class="s st-conf" x="264" y="287">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="312" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="332">Content pipeline (drafts)</text>
+          <text class="s st-conf" x="264" y="347">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="372" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="392">Buyer Lab: quote-grounded hypotheses</text>
+          <text class="s st-conf" x="264" y="407">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="432" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="452">Encrypted keys, one set per workspace</text>
+          <text class="s st-conf" x="264" y="467">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="252" y="492" width="320" height="46" rx="6"/>
+          <text class="t" x="264" y="512">Publishing service and receipts</text>
+          <text class="s st-conf" x="264" y="527">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="630" y="132" width="170" height="46" rx="6"/>
+          <text class="t" x="642" y="152">AssemblyAI voice agent</text>
+          <text class="s st-conf" x="642" y="167">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="630" y="252" width="170" height="46" rx="6"/>
+          <text class="t" x="642" y="272">Neon database, auth</text>
+          <text class="s st-conf" x="642" y="287">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="630" y="312" width="170" height="46" rx="6"/>
+          <text class="t" x="642" y="332">DeepSeek (language)</text>
+          <text class="s st-conf" x="642" y="347">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-conf" x="630" y="432" width="170" height="46" rx="6"/>
+          <text class="t" x="642" y="452">Stripe (test mode)</text>
+          <text class="s st-conf" x="642" y="467">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-none" x="830" y="372" width="160" height="46" rx="6"/>
+          <text class="t" x="842" y="392">Instagram, Facebook</text>
+          <text class="s st-none" x="842" y="407">NOT BUILT HERE</text>
+
+          <rect class="node n-conf" x="830" y="432" width="160" height="46" rx="6"/>
+          <text class="t" x="842" y="452">X, LinkedIn, Substack</text>
+          <text class="s st-conf" x="842" y="467">NEEDS CREDENTIALS</text>
+
+          <rect class="node n-conf" x="830" y="492" width="160" height="46" rx="6"/>
+          <text class="t" x="842" y="512">TryPost on Railway</text>
+          <text class="s st-conf" x="842" y="527">REAL WHEN CONFIGURED</text>
+
+          <rect class="node n-real" x="830" y="556" width="160" height="46" rx="6"/>
+          <text class="t" x="842" y="576">Bluesky</text>
+          <text class="s st-real" x="842" y="591">REAL, PROVEN LIVE</text>
+
+          <path class="flow" d="M109 178 V196" marker-end="url(#ah)"/>
+          <path class="flow" d="M198 219 H225 V155 H252" marker-end="url(#ah)"/>
+          <path class="flow" d="M572 155 H630" marker-end="url(#ah)"/>
+          <path class="flow" d="M630 170 H602 V215 H572" marker-end="url(#ah)"/>
+          <path class="flow" d="M412 238 V252" marker-end="url(#ah)"/>
+          <path class="flow" d="M572 275 H630" marker-end="url(#ah)"/>
+          <path class="flow" d="M572 335 H630" marker-end="url(#ah)"/>
+          <path class="soft" d="M572 395 H602 V347 H630" marker-end="url(#ahs)"/>
+          <path class="flow" d="M412 478 V492" marker-end="url(#ah)"/>
+          <path class="flow" d="M198 515 H252" marker-end="url(#ah)"/>
+          <path class="flow" d="M572 515 H830" marker-end="url(#ah)"/>
+          <text class="note" x="640" y="507">create a draft, then publish</text>
+          <path class="soft" d="M572 528 H812 V455 H830" marker-end="url(#ahs)"/>
+          <path class="flow" d="M910 538 V556" marker-end="url(#ah)"/>
+        </svg>
+      </div>
+      <figcaption>Solid blue lines are real calls. Dashed lines are paths that need the right credentials or setup. The orchestrator never handles the voice audio itself: the browser streams it straight to AssemblyAI with a short-lived token.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="flows-h">
+    <h2 id="flows-h">Three flows, step by step</h2>
+    <div class="flows">
+      <article class="card">
+        <h3>A voice call becomes a lead</h3>
+        <ol>
+          <li>A visitor starts a session. The server checks consent, gating and usage.</li>
+          <li>The server mints a short-lived token. The browser never sees the real key.</li>
+          <li>The browser streams audio to AssemblyAI and registers seven tools.</li>
+          <li>The agent calls a tool, for example <code>qualify_lead</code>.</li>
+          <li>The server applies guardrails and writes the lead to the CRM.</li>
+          <li>The agent keeps talking. The conversation can seed a post draft.</li>
+        </ol>
+        <p class="foot">Time to first audio is not measured yet, so there is no speed claim.</p>
+      </article>
+      <article class="card">
+        <h3>A draft becomes a post</h3>
+        <ol>
+          <li>A signed-in seller submits text and picks an account.</li>
+          <li>The server loads that workspace's own key and checks the account belongs to it.</li>
+          <li>It creates a draft in TryPost. Every post starts as a draft.</li>
+          <li>It asks TryPost to publish the draft.</li>
+          <li>It reads the status back until TryPost says published.</li>
+          <li>The receipt says published, or queued. It never says published early.</li>
+        </ol>
+        <p class="foot">Proven end to end on Bluesky on 2026-09-26.</p>
+      </article>
+      <article class="card">
+        <h3>Buyer Lab, without the hype</h3>
+        <ol>
+          <li>Page text is fetched or pasted, tagged public or signed-in.</li>
+          <li>Simulated buyer personas read it.</li>
+          <li>Every claim must carry a verbatim quote from what that persona saw. Others are dropped and counted.</li>
+          <li>The report cites claim ids only.</li>
+          <li>The output is hypotheses. No probability, conversion or revenue figure is produced.</li>
+        </ol>
+        <p class="foot">One real-model check: 45 claims kept, 3 dropped.</p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="limits-h">
+    <h2 id="limits-h">Where it stops today</h2>
+    <div class="two">
+      <ul class="plain">
+        <li><b>Speed is unmeasured.</b> No latency figure is quoted until real calls are measured.</li>
+        <li><b>No calendar.</b> The consultation tool records a request and a confirmation code. It does not book a slot.</li>
+        <li><b>Product questions use four documents.</b> It is a keyword lookup, not document search.</li>
+        <li><b>One network auto-publishes.</b> Bluesky only. X and LinkedIn need credentials, and other networks need their own app registration.</li>
+      </ul>
+      <ul class="plain">
+        <li><b>Billing is in test mode.</b> No real money moves yet.</li>
+        <li><b>Sign-in uses shared development keys.</b> Move to your own Google client before real customers sign in.</li>
+        <li><b>Widget calls are not metered.</b> Only console calls count against a plan.</li>
+        <li><b>No duplicate protection on Publish.</b> A double click can post twice.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="use-h">
+    <h2 id="use-h">What people use it for</h2>
+    <p class="lede" style="font-size:15px">Built for founders, creators and agencies selling offers of about $2,000 and up.</p>
+    <div class="cases">
+      <div class="case"><b>After-hours inbound</b><span>A visitor talks to the agent. Budget, timeline and fit land in the CRM.</span></div>
+      <div class="case"><b>Landing-page agent</b><span>One script tag puts the agent on the page, limited to allowed sites.</span></div>
+      <div class="case"><b>Calls into content</b><span>Conversation topics become drafts. A Bluesky post can go out from the app.</span></div>
+      <div class="case"><b>Offer testing</b><span>Simulated buyers read the page and return quote-backed objections.</span></div>
+      <div class="case"><b>Agencies, several brands</b><span>Separate credentials and exports for each client brand.</span></div>
+      <div class="case"><b>Retention calls</b><span>A churn-save persona with a hard ceiling on discounts.</span></div>
+      <div class="case"><b>Honest reporting</b><span>Every receipt says published, queued or simulated.</span></div>
+      <div class="case"><b>Demo mode</b><span>Anonymous sessions for visitors and judges, capped at five minutes.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Try it at <b>stratosgtm.vercel.app</b>. It is early, and rough in places.</div>
+    <div>Source of truth: <code>docs/gtm/architecture-and-use-cases.md</code> in the repository. Update the status labels there and here together.</div>
+  </footer>
+</div>

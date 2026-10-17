@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StratosGTM Terms of Service</title>
+<meta name="description" content="The terms for using StratosGTM, including billing, refunds, pilots and liability.">
+<link rel="canonical" href="https://stratosgtm.vercel.app/terms.html">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --surface-2: #eaeff3;
+    --ink: #13202b;
+    --muted: #55626e;
+    --line: #c9d3db;
+    --accent: #2340d9;
+    --real: #12784a;
+    --real-tint: #e2f3ea;
+    --conf: #9a5b00;
+    --conf-tint: #fbefd9;
+    --sim: #6b3fa0;
+    --sim-tint: #efe7f8;
+    --none: #6a7480;
+    --none-tint: #eceff2;
+    --font-head: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+    --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0d141a;
+      --surface: #141d25;
+      --surface-2: #1b2732;
+      --ink: #e6edf2;
+      --muted: #9aa9b5;
+      --line: #2a3945;
+      --accent: #8da2ff;
+      --real: #4fd08d;
+      --real-tint: #12291f;
+      --conf: #f0b458;
+      --conf-tint: #2c2412;
+      --sim: #c3a0f0;
+      --sim-tint: #251d33;
+      --none: #93a0ac;
+      --none-tint: #1c252d;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d141a;
+    --surface: #141d25;
+    --surface-2: #1b2732;
+    --ink: #e6edf2;
+    --muted: #9aa9b5;
+    --line: #2a3945;
+    --accent: #8da2ff;
+    --real: #4fd08d;
+    --real-tint: #12291f;
+    --conf: #f0b458;
+    --conf-tint: #2c2412;
+    --sim: #c3a0f0;
+    --sim-tint: #251d33;
+    --none: #93a0ac;
+    --none-tint: #1c252d;
+  }
+
+  body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--font-body); padding-inline: 16px; padding-block: 28px 56px; }
+  .wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 40px; }
+  h1, h2, h3 { font-family: var(--font-head); font-weight: 600; letter-spacing: 0.005em; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.05; }
+  h2 { font-size: 22px; line-height: 1.2; }
+  h3 { font-size: 17px; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 62ch; font-size: 17px; margin-top: 12px; }
+  .verified { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 20px; }
+  .pill { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 9px; border-radius: 4px; border: 1px solid currentColor; }
+  .p-real { color: var(--real); background: var(--real-tint); }
+  .p-conf { color: var(--conf); background: var(--conf-tint); }
+  .p-sim { color: var(--sim); background: var(--sim-tint); }
+  .p-none { color: var(--none); background: var(--none-tint); }
+
+  figure { margin: 0; }
+  .diagram { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 12px; }
+  .diagram svg { display: block; min-width: 860px; width: 100%; height: auto; }
+  figcaption { color: var(--muted); font-size: 13px; margin-top: 10px; max-width: 70ch; }
+
+  svg text { font-family: var(--font-body); fill: var(--ink); }
+  svg .t { font-size: 12.5px; font-weight: 500; }
+  svg .s { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em; }
+  svg .h { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; fill: var(--muted); }
+  svg .note { font-size: 11px; fill: var(--muted); }
+  svg .zone { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 5 4; }
+  svg .flow { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  svg .soft { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  svg .head { fill: var(--accent); }
+  svg .st-real { fill: var(--real); }
+  svg .st-conf { fill: var(--conf); }
+  svg .st-none { fill: var(--none); }
+  svg .node { stroke-width: 1; }
+  svg .n-real { fill: var(--real-tint); stroke: var(--real); }
+  svg .n-conf { fill: var(--conf-tint); stroke: var(--conf); }
+  svg .n-none { fill: var(--none-tint); stroke: var(--none); stroke-dasharray: 4 3; }
+  svg .n-plain { fill: var(--surface-2); stroke: var(--line); }
+
+  .flows { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 18px; }
+  .card { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px; display: grid; gap: 12px; align-content: start; }
+  .card ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+  .card li::marker { font-family: var(--font-mono); color: var(--accent); font-size: 13px; }
+  .card .foot { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 18px; }
+  ul.plain { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  ul.plain li { padding-left: 16px; position: relative; }
+  ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 2px; background: var(--muted); }
+  .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 18px; }
+  .case { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; background: var(--surface); display: grid; gap: 6px; align-content: start; }
+  .case b { font-family: var(--font-head); font-weight: 600; font-size: 16px; }
+  .case span { color: var(--muted); font-size: 13.5px; }
+  footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 13px; display: grid; gap: 6px; }
+  code { font-family: var(--font-mono); font-size: 0.92em; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+  .article { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+  .article h2 { margin-top: 22px; scroll-margin-top: 16px; }
+  .article p, .article li { font-size: 16.5px; line-height: 1.65; }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+  tr:last-child td { border-bottom: 0; }
+  .fig { margin: 6px -80px 6px; }
+  @media (max-width: 960px) { .fig { margin-inline: 0; } }
+  .toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--font-mono); font-size: 12px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  a { color: var(--accent); }
+  .article > * { min-width: 0; }
+  .article p.verified { font-size: 12.5px; line-height: 1.55; }
+  .diagram { max-width: 100%; }
+
+  .article h1 { margin-bottom: 4px; }
+  .article blockquote { display:none; }
+  .article ul, .article ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+  .article a { color: var(--accent); }
+  .nav { display:flex; gap:16px; flex-wrap:wrap; font-size:14px; }
+  .nav a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="nav"><a href="/">StratosGTM</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
+<main class="article">
+<h1>StratosGTM Terms of Service</h1>
+<p><strong>Last updated:</strong> September 26, 2026  ·  <strong>Operator:</strong> Stratos growthOS  ·  <strong>Contact:</strong> veloce.researcher@gmail.com</p>
+<h2>1. Agreement</h2>
+<p>These terms are a contract between you and Stratos growthOS ("we", "us"). By creating an account or using
+StratosGTM, you agree to them and to our <a href="/privacy.html">Privacy Policy</a>. If you use it for a business, you confirm you
+can bind that business. If you do not agree, do not use the service.</p>
+<h2>2. What the service is, and what it is not</h2>
+<p>StratosGTM is a voice agent for your website, a CRM for the leads it captures, a content pipeline, a tool that simulates
+buyer reactions to a page (Buyer Lab), and a way to publish posts to connected accounts. <strong>It is early-stage software.</strong>
+Some capabilities work only when you connect your own keys or accounts, and some are labeled as simulated. We describe
+what is real and what is not in the product and in our public documentation. Please read those labels.</p>
+<p>Things that are outputs, not promises: AI-generated text can be wrong or incomplete. Buyer Lab returns <strong>hypotheses from
+simulated buyers, not predictions or measurements</strong>. A publishing receipt tells you what the publishing service reported,
+and "queued" means it has not been confirmed. You are responsible for reviewing anything before you rely on it or
+publish it.</p>
+<h2>3. Accounts</h2>
+<p>You sign in with Google. You are responsible for your account and everything done through it. Keep your connection keys
+private. Tell us promptly at veloce.researcher@gmail.com if you suspect misuse. You must be at least 18, and the service is intended for use in the United States.</p>
+<h2>4. Your responsibilities when you put an agent on a site</h2>
+<p>You are the one who chooses to talk to your visitors with an AI voice agent, so you are responsible for doing it lawfully.
+That includes: telling visitors they are speaking with an AI; getting the consent that recording and call-interception
+laws require where you operate; honoring opt-outs; and not using the service for unlawful, deceptive, harassing or
+spam communications. Our consent layer is an engineering aid, not legal advice, and it does not remove your duties. Do
+not use the service for emergency communications or in regulated sectors (for example health, credit or insurance
+decisions) without your own compliance review.</p>
+<h2>5. Acceptable use</h2>
+<p>Do not: break the law or others' rights; impersonate a person or organization; send unsolicited bulk messages; attempt to
+access other workspaces or the systems behind the service; probe, overload or reverse-engineer the service; publish
+content that is unlawful, hateful or infringing; or use the service to build a competing product from our outputs.
+We may suspend access that puts the service or other people at risk.</p>
+<h2>6. Your content and our license to run it</h2>
+<p>You keep your rights in your content, including leads, notes, dossiers, drafts and page text. You give us a limited
+license to host, process and transmit it, and to send it to the providers named in our Privacy Policy, solely to run the
+service for you. You confirm you have the right to provide it.</p>
+<h2>7. Third-party services and your own keys</h2>
+<p>The service depends on providers such as voice, language-model, sign-in, payment and publishing services. Where you
+connect your own keys or accounts, you also agree to those providers' terms, and you are responsible for their charges.
+<strong>There are no free credits.</strong> A workspace uses its own keys, or has an owner-granted allowance, or needs a paid plan.
+We are not responsible for a provider's outage, change or decision.</p>
+<h2>8. Plans, billing and refunds</h2>
+<p>Plans and prices are shown on our pricing page and may change with notice. Monthly plans are billed in advance each month and annual plans in advance each year, and they renew
+automatically until you cancel. Voice minutes beyond a plan's included minutes are billed as overage at the per-minute
+rate on the pricing page, at the end of each billing period. Prices exclude taxes, which we add where the law requires.
+If a payment fails, we will retry and tell you, and if it stays unpaid after 7 days we may suspend the workspace until
+it is paid. Billing is currently in test mode, so no real charges are made until we
+announce otherwise. <strong>Refunds.</strong> New customers can ask for a full refund of their first payment within 14 days of making it. After
+that, payments are not refundable, and we do not give partial refunds for unused time or included minutes. Overage
+charges are not refundable. Nothing here limits a refund the law requires. You can cancel at any time; cancellation takes effect at the end of the paid period
+unless we say otherwise.</p>
+<h2>9. Pilots and early access</h2>
+<p>A pilot is a fixed-length trial on the terms in your order. Unless the order says otherwise: it lasts 30 days from
+setup; it includes the features of the Pro plan, help setting up your agent and page (up to about two hours), and a
+weekly 20-minute review; and you pay the fixed pilot fee stated in the order. <strong>A pilot does not renew or convert
+automatically.</strong> When it ends, your workspace stays available for 7 days so you can export your data, and we delete it
+within 30 days unless you choose a paid plan. Pilots are provided as-is, with the limits in these terms, and we do not
+promise any result. We will not describe your results publicly, or use your name or logo, without your written
+permission, though we may use aggregate, anonymized figures. Feedback you give us is voluntary, and we may use it to
+improve the service without owing you anything.</p>
+<h2>10. Availability and changes</h2>
+<p>We work to keep the service running, but we do not promise it will be uninterrupted or error-free, and there is no
+service-level commitment unless we agree one in writing. We may change or retire features, and we will try to give notice
+of material changes.</p>
+<h2>11. Ownership</h2>
+<p>We and our licensors own the service, its software and its branding. Open-source components, including any we run as
+separate services, remain under their own licenses. Except for the rights stated here, we grant you no ownership in the
+service.</p>
+<h2>12. Ending your use</h2>
+<p>You may stop using the service and ask us to delete your account at any time. We may suspend or end your access if you
+break these terms or if we must by law. Sections that by their nature should survive (ownership, disclaimers,
+liability, and governing law) will survive.</p>
+<h2>13. Disclaimers</h2>
+<p>The service is provided "as is" and "as available". To the extent the law allows, we disclaim all warranties, including
+merchantability, fitness for a particular purpose, accuracy of AI output, and non-infringement. We do not promise any
+particular business result, such as more leads, higher conversion or revenue.</p>
+<h2>14. Limit of liability</h2>
+<p>To the extent the law allows, we are not liable for indirect, incidental, special, consequential or punitive damages, or
+for lost profits, revenue, data or goodwill. Our total liability for any claim relating to the service is limited to the
+greater of the amount you paid us in the 12 months before the claim and $100. Some places do not allow these
+limits, so they may not apply to you in full.</p>
+<h2>15. Indemnity</h2>
+<p>You agree to defend and reimburse us for claims arising from your content, your use of the agent with your visitors
+(including consent and communications law), or your breach of these terms, to the extent the law allows.</p>
+<h2>16. Governing law and disputes</h2>
+<p>These terms are governed by the laws of the Commonwealth of Pennsylvania, without regard to conflict-of-law rules. Before filing a claim, each party will try in good faith to resolve the
+dispute informally for 30 days after written notice to the other party. If that does not work, claims will be brought
+in the state courts located in Chester County, Pennsylvania, or the United States District Court for the Eastern
+District of Pennsylvania, and both parties consent to those courts.</p>
+<h2>17. Changes to these terms</h2>
+<p>We may update these terms. We will post the new version and change the date above, and we will tell account holders of
+material changes. Continuing to use the service after a change means you accept it.</p>
+<h2>18. Contact</h2>
+<p>Stratos growthOS · veloce.researcher@gmail.com · Malvern, Pennsylvania, United States</p>
+</main>
+</div>
+</body>
+</html>

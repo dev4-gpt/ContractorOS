@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholder demo credentials and test fixtures (not real keys)"
+paths = [
+  '''apps/orchestrator/src/__tests__/meRouter\.test\.ts''',
+  '''apps/orchestrator/src/__tests__/workspaceKeysService\.test\.ts''',
+  '''apps/orchestrator/src/services/clientCredentialsService\.ts''',
+]

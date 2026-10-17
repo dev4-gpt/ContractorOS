@@ -1,0 +1,22 @@
+/**
+ * Clips a value to a max length with surrogate-safe truncation.
+ * Returns empty string for non-strings.
+ * Trims whitespace, slices to max chars, and drops a trailing lone HIGH surrogate (0xD800-0xDBFF).
+ */
+export function clip(value: unknown, max: number): string {
+  if (typeof value !== 'string') return '';
+  let s = cleanText(value).trim().slice(0, max);
+  // If the last character is a lone HIGH surrogate (0xD800-0xDBFF), drop it.
+  const code = s.charCodeAt(s.length - 1);
+  return code >= 0xd800 && code <= 0xdbff ? s.slice(0, -1) : s;
+}
+
+/**
+ * Makes caller- or crawler-supplied text safe for Postgres text/jsonb columns:
+ * strips every U+0000 (which they cannot hold) and replaces lone surrogates with U+FFFD.
+ * Clean BEFORE validating length, so a NUL-only value is rejected as empty.
+ */
+export function cleanText(s: string): string {
+  // toWellFormed is ES2024; the project's lib is ES2022, so cast rather than change tsconfig.
+  return (s.replace(/\u0000/g, '') as string & { toWellFormed(): string }).toWellFormed();
+}

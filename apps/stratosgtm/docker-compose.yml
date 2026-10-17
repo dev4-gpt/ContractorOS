@@ -1,0 +1,73 @@
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.orchestrator
+    container_name: voice-orchestrator
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+      - ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./data:/app/apps/orchestrator/data
+      - ./vault:/app/apps/orchestrator/vault
+      - ./graphify-out:/app/apps/orchestrator/graphify-out
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - voice-net
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    container_name: voice-web-console
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_ORCHESTRATOR_URL=http://localhost:4000
+    depends_on:
+      - orchestrator
+    restart: unless-stopped
+    networks:
+      - voice-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: voice-redis-cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - voice-net
+
+  instatic:
+    image: ghcr.io/corebunch/instatic:latest
+    platform: linux/amd64
+    container_name: voice-instatic-cms
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DATABASE_URL=file:./data/instatic.sqlite
+      - NODE_ENV=production
+    volumes:
+      - instatic-data:/app/data
+    restart: unless-stopped
+    networks:
+      - voice-net
+
+networks:
+  voice-net:
+    driver: bridge
+
+volumes:
+  redis-data:
+  instatic-data:
