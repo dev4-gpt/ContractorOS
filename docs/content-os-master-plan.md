@@ -143,6 +143,12 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 
 **Factory status (2026-10-16):** `packages/factory` has the contract (stages, idempotent workflow id, approval bound to one workflow), the `AgentRunner` and `ResearchProvider` plug-in points, deterministic checks, and a verify-and-repair loop that stops at human approval. VoiceAI's executor was reviewed and not ported: two of its three research lanes are hard-coded fake sources, its fallback content contains invented claims, and its "self-healing" truncates text while logging a model rewrite.
 
+## 10a. Status update (2026-10-17)
+- **Drive exchange verified for real.** Google Drive for Desktop is installed and signed in; `My Drive/Content OS/{Inbox,Outbox,Processed}` exists. A worker-style file dropped in `Outbox` was ingested by `FolderExchange`, its sha256 matched, and it moved to `Processed` intact (throwaway vault, so the real vault was untouched). Still open: remote workers cannot run Drive for Desktop and will need an own narrow-scope OAuth client.
+- **Old rclone grant revoked and its remote deleted** (the token now returns `Invalid Credentials`).
+- **VoiceAI history scan (regex, no scanner installed):** no real keys found across all branches. Hits were placeholder demo values in tests and in the seeded `vault/Clients/DesignAcademy_Studio/Credentials.json`. Still to do before any import: re-run with gitleaks or trufflehog, and import without `vault/`, PDFs, `.agents/` skills, `docs/internal/` and slide decks. VoiceAI is not yet imported: the copy was blocked by the permission classifier and waits for the owner's go-ahead.
+- Research saved to the AgenticOS vault: blueprints, GTM links, starred repos, the AI CMO video and the free-voice-AI note (Chatterbox Turbo, MIT, vendor claims unverified).
+
 ## 11. Not yet done
 Second code read of AgenticOS (~150 unread lib files, product-experience, workers), VoiceAI orchestrator, prospect-previews source, agentos execution proxy; no live test of any Craft app, REA, or HyperFrames; no external validation of vendor claims; Remotion license terms.
 
