@@ -1,0 +1,24 @@
+{
+  "name": "@reforge/research",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "Polite web fetching, a research provider for the content factory, page audits and competitor teardowns",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p . --noEmit"
+  },
+  "dependencies": {
+    "@reforge/core": "*",
+    "@reforge/factory": "*",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

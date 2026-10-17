@@ -1,10 +1,10 @@
 /**
- * Real-model smoke test for the content factory.
+ * Real-model smoke test for the content factory with the real research provider.
  *
- *   npx tsx scripts/smoke-factory.ts [model] [https-url]
+ *   npx tsx scripts/smoke-factory.ts [model] [url1,url2,...] ["brief"]
  *
  * The model is the `claude` CLI (your existing login; default alias "haiku", the cheapest).
- * The only source is one real public page, fetched over https with the private-address guard.
+ * Sources are real public pages fetched politely (robots.txt, private-address guard) by WebResearch.
  * Everything is written to a temp folder that is deleted at the end. Expect a few US cents at most.
  */
 import { mkdtemp, rm } from "node:fs/promises";
@@ -13,9 +13,9 @@ import path from "node:path";
 import { RunLog, VaultMemoryStore, runLogDir } from "../packages/core/src/index.ts";
 import {
   ClaudeCliRunner, ContentFactory, createPlan, defaultChecks, runChecks,
-  type AgentRunner, type ResearchProvider, type RunnerRequest,
+  type AgentRunner, type RunnerRequest,
 } from "../packages/factory/src/index.ts";
-import { assertPublicHost } from "../packages/outreach/src/index.ts";
+import { WebResearch } from "../packages/research/src/index.ts";
 
 let failures = 0;
 function check(name: string, ok: boolean, detail = ""): void {
@@ -23,39 +23,12 @@ function check(name: string, ok: boolean, detail = ""): void {
   if (!ok) failures += 1;
 }
 
-function toPlainText(raw: string): string {
-  return raw
-    .replace(/<[^>]+>/g, " ")
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
-    .replace(/[#>*`|]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function webSource(url: string): ResearchProvider {
-  return {
-    research: async () => {
-      const u = new URL(url);
-      if (u.protocol !== "https:") throw new Error("only https sources are allowed");
-      await assertPublicHost(u.hostname);
-      const res = await fetch(u, {
-        headers: { "User-Agent": "reforge-smoke/0.1", Accept: "text/markdown, text/plain, text/html" },
-        redirect: "error",
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (!res.ok) throw new Error(`source answered ${res.status}`);
-      const text = toPlainText((await res.text()).slice(0, 200_000));
-      return [{ url, title: u.hostname, retrievedAt: new Date().toISOString(), evidence: text.slice(0, 1500) }];
-    },
-  };
-}
-
 async function main() {
   const model = process.argv[2] ?? "haiku";
-  const url = process.argv[3] ?? "https://raw.githubusercontent.com/heygen-com/hyperframes/main/README.md";
+  const urls = (process.argv[3] ?? "https://raw.githubusercontent.com/heygen-com/hyperframes/main/README.md").split(",").map((u) => u.trim());
+  const brief = process.argv[4] ?? "Write a short article (about 200 words) explaining what the project in the sources is and who it is for. Use only the provided sources.";
   const scratch = await mkdtemp(path.join(os.tmpdir(), "reforge-smoke-factory-"));
-  console.log(`model: ${model}\nsource: ${url}\n`);
+  console.log(`model: ${model}\nsources: ${urls.join("\n         ")}\n`);
 
   try {
     const vault = path.join(scratch, "vault");
@@ -64,13 +37,12 @@ async function main() {
     const inner = new ClaudeCliRunner({ model, maxBudgetUsd: 0.25 });
     let calls = 0;
     const runner: AgentRunner = { run: (request: RunnerRequest) => (calls += 1, inner.run(request)) };
+    const skipped: string[] = [];
+    const research = new WebResearch({ urls, onError: (url, error) => skipped.push(`${url}: ${error.message}`) });
     const factory = new ContentFactory({
-      runner, research: webSource(url), store, runLog, budgetUsd: 0.5, maxRepairAttempts: 2, stateDir: path.join(scratch, "state"),
+      runner, research, store, runLog, budgetUsd: 0.5, maxRepairAttempts: 2, stateDir: path.join(scratch, "state"),
     });
-    const plan = createPlan({
-      tenantSlug: "smoke",
-      brief: "Write a short article (about 200 words) explaining what the project in the source is and who it is for. Use only the provided source.",
-    });
+    const plan = createPlan({ tenantSlug: "smoke", brief });
 
     const started = Date.now();
     const run = await factory.run(plan);
@@ -79,7 +51,9 @@ async function main() {
 
     console.log(`status: ${run.status}${run.error ? `  error: ${run.error}` : ""}`);
     console.log(`time: ${seconds}s  model calls: ${calls}  cost: $${total.usd.toFixed(5)}  tokens in/out: ${total.inputTokens}/${total.outputTokens}`);
-    console.log(`citations: ${run.citations.length}  repair attempts: ${run.quality?.repairAttempts ?? "n/a"}  quality score: ${run.quality?.score ?? "n/a"}`);
+    console.log(`sources used: ${run.citations.length}/${urls.length}  repair attempts: ${run.quality?.repairAttempts ?? "n/a"}  quality score: ${run.quality?.score ?? "n/a"}`);
+    for (const c of run.citations) console.log(`  [${c.id}] ${c.title} <${c.url}> (${c.evidence.length} chars of evidence)`);
+    for (const s of skipped) console.log(`  skipped: ${s}`);
     if (run.quality && run.quality.findings.length) console.log(`findings:\n${run.quality.findings.map((f) => `  - ${f}`).join("\n")}`);
 
     const finalId = run.assets.drafts.at(-1);
@@ -94,7 +68,7 @@ async function main() {
       !!finalId && (await store.lineage(finalId)).length >= 4 && (await store.lineage(finalId))[0]!.id === run.assets.brief);
     const cited = [...draft.matchAll(/\[cite-(\d+)\]/g)].map((m) => `cite-${m[1]}`);
     check("citation markers in the draft refer to real sources", cited.every((id) => run.citations.some((c) => c.id === id)),
-      cited.length ? `${cited.length} marker(s)` : "the model used no [cite-N] markers");
+      cited.length ? `${cited.length} marker(s), ${new Set(cited).size} distinct source(s)` : "the model used no [cite-N] markers");
     if (run.status === "awaiting_approval") {
       const verdict = runChecks(defaultChecks, draft, { citations: run.citations });
       check("independent re-check: every figure in the approved draft is sourced", verdict.findings.length === 0, verdict.findings.join("; "));
