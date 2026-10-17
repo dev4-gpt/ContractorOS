@@ -122,10 +122,20 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 4. First audience: **both** solo creators and small agencies.
 5. Outreach is assisted by default.
 
+**Factory decision (2026-10-16, after reading both sources):** the AgenticOS and VoiceAI factories both derive from Raja Ashok's public "Hermes Content Factory" blueprint, so credit it and copy none of its text. They are complementary: AgenticOS has the **contract** (8 stages, approval record bound to one workflow, citation/quality/delivery records, idempotency key, `autoPublish: false`), VoiceAI has the **executor** (parallel research lanes, drafting, self-healing verification loop, budget cap, live telemetry). The unified factory in the Content OS = AgenticOS contract + a clean rewrite of VoiceAI's executor. VoiceAI's seeded demo job (invented "$42k MRR" results, in-memory store) must not be imported as data.
+
+**Layering (who owns what):**
+- The **Content OS (public)** owns content-domain logic and runs standalone: factory, assets/lineage/signals, suppression, research, studio engines, concept sites, StratosGTM voice front door, attribution.
+- It talks to its host through four interfaces: `MemoryStore`, `AgentRunner`, `Sender`, `CostLedger`.
+- **Standalone host:** CLI + small web UI, BYOK keys, a local folder or SQLite. For solo creators without AgenticOS.
+- **AgenticOS host (private):** adapters over its vault, Hermes/agent hub, Gmail outreach engine and cost ledger. AgenticOS imports Content OS packages; the Content OS never imports AgenticOS.
+- **Do not rebuild** what AgenticOS has: SEO, radar, lead enrichment, the email sender, thumbnails, music, OpenDesign, tenancy and billing. Call them through adapters.
+- Leads and PII stay in the StratosGTM Postgres CRM; the vault holds only Signals with contact IDs, never personal data.
+
 **Still open:**
 1. Combined-repo license (recommended: Apache-2.0).
-2. Which of the three content factories becomes the engine.
-3. Name: Reforge, Atelier, or other (availability unchecked).
+2. Name: Reforge, Atelier, or other (availability unchecked).
+3. Model provider defaults: VoiceAI's executor uses DeepSeek via a harness; keep model choice pluggable.
 
 ## 11. Not yet done
 Second code read of AgenticOS (~150 unread lib files, product-experience, workers), VoiceAI orchestrator, prospect-previews source, agentos execution proxy; no live test of any Craft app, REA, or HyperFrames; no external validation of vendor claims; Remotion license terms.
