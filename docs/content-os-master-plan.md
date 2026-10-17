@@ -95,7 +95,7 @@ reforge/ (monorepo)
 | Phase | Deliver | Exit check |
 |---|---|---|
 | 0. Housekeeping | Free disk; decide private monorepo; decide VoiceAI placement and websitegenerator approach; confirm Oracle account | Decisions recorded |
-| 1. Core | vault contract, dedupe, suppression, cost/audit log | Same asset requested twice returns the existing one |
+| 1. Core | vault contract, dedupe, suppression, cost/audit log, Graphify adapter, Drive-style folder exchange | Same asset requested twice returns the existing one. **Done 2026-10-16** in `packages/core` (17 tests). Not yet run against the real vault, real PDFs, a real Drive folder or the real `graphify` CLI. |
 | 2. Assisted outreach | port prospect-previews; plug into AgenticOS outreach; shared DNC | One concept site + draft produced, human sends |
 | 3. Research | MetaScope-style audit, REA sandbox, competitor intake notes in the vault | One competitor teardown written to the vault |
 | 4. Studio | Z-Image job on Kaggle; HyperFrames director prompt with verification receipt | One 30-60s video with 16:9, 9:16, 1:1 + SOURCES/DECISIONS |
