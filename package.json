@@ -1,0 +1,12 @@
+{
+  "name": "reforge",
+  "private": true,
+  "description": "Content OS monorepo (working name Reforge)",
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}
