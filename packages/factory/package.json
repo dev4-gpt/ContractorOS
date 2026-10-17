@@ -1,7 +1,7 @@
 {
   "name": "@reforge/factory",
   "version": "0.1.0",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "description": "Content factory: staged brief-to-draft pipeline with citations, verify-and-repair, human approval",
   "type": "module",
   "main": "./src/index.ts",

@@ -1,0 +1,22 @@
+Content OS (ContractorOS)
+Copyright (c) 2026 Aryaman Singh Dev
+
+This program is free software: you can redistribute it and/or modify it under the
+terms of the GNU Affero General Public License as published by the Free Software
+Foundation, version 3. See LICENSE for the full text.
+
+Third-party code in this repository keeps its own copyright and license:
+
+  apps/seo-os  (SEO Office)  Copyright (c) 2026 Daniel Agrici, AGPL-3.0.
+               Imported as a snapshot from https://github.com/AgriciDaniel/seo-os
+               (via the author's fork dev4-gpt/seo-os). See apps/seo-os/NOTICE for the
+               MIT-licensed parts it vendors: claw3d, claude-seo, marketing-brain.
+               The AGPL grant does not include any trademark licence; "SEO Office"
+               and "AI Marketing Hub" belong to their owners.
+
+First-party snapshot (Copyright (c) 2026 Aryaman Singh Dev):
+  apps/stratosgtm  imported from dev4-gpt/VoiceAI. Published originally under MIT (kept in
+                   apps/stratosgtm/LICENSE); distributed here as part of the AGPL-3.0 work.
+
+Other first-party packages (packages/*) were written or ported by the author
+(prospect-previews and wiza were MIT) and are AGPL-3.0-only here.

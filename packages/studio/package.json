@@ -1,7 +1,7 @@
 {
   "name": "@reforge/studio",
   "version": "0.1.0",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "description": "Shot specs for generative video: camera trajectory, character consistency, aspect ratios and an honest job state machine (ported from wiza)",
   "type": "module",
   "main": "./src/index.ts",

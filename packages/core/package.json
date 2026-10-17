@@ -1,7 +1,7 @@
 {
   "name": "@reforge/core",
   "version": "0.1.0",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "description": "Shared memory contract for the Content OS: assets, lineage, dedupe, suppression, audit",
   "type": "module",
   "main": "./src/index.ts",

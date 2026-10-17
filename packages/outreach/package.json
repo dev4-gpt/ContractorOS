@@ -1,7 +1,7 @@
 {
   "name": "@reforge/outreach",
   "version": "0.1.0",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "description": "Assisted outreach: labeled concept sites, identified messages, one contact per business, shared do-not-contact list",
   "type": "module",
   "main": "./src/index.ts",
