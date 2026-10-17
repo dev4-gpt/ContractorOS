@@ -156,6 +156,11 @@ First slice to build: **Phases 1 + 2 + a thin 3**, because they need no GPU and 
 - **ai-website-cloner** is **not the author's code**: it is `JCodesMore/ai-website-cloner-template` (MIT, Copyright 2025 JCodesMore), committed once as a private copy, plus scraped Shopify content and 20 agent-config folders. Do not import it. If we use its `/clone-website` workflow, install or reference upstream with attribution and rebuild with our own assets and copy.
 - **Archive candidates (not yet done, needs the owner's confirmation of this exact list):** wiza, MetaScope, prospect-previews, ai-website-cloner (private), websitegenerator (a fork; upstream remains), VoiceAI (after the import is reviewed in place). Never touch local-AgenticOS or `~/Documents/Codex/Projects/AgentOS`.
 
+## 10c. Imported apps verified (2026-10-17)
+- `apps/stratosgtm` (from VoiceAI): installed with `npm install --ignore-scripts` inside its own folder (not part of the root workspaces). Orchestrator typecheck clean and **758 jest tests pass**; web typecheck clean and **137 vitest tests pass**; the evals package passes **offline** only (simulated, two trials per task, so wide confidence intervals: not evidence of real-model quality). Not run: the live voice call, Stripe, Postgres/Neon, AssemblyAI (all need keys or services). The seeded demo job still must not be treated as data.
+- `apps/seo-os`: `pnpm install --frozen-lockfile --ignore-scripts`, then `pnpm rebuild better-sqlite3` (native module needed by its tests). Typecheck clean and **204 node tests pass**. Not run: `next build`, the 3D UI, any specialist against a real site or API key. Unmodified upstream snapshot; AGPL-3.0, (c) Daniel Agrici.
+- Decided not to import `dev4-gpt/Debugging-voice-agent` (developer-debugging tool, NVIDIA and ElevenLabs keys, no license file); owner agreed to leave it alone.
+
 ## 11. Not yet done
 Second code read of AgenticOS (~150 unread lib files, product-experience, workers), VoiceAI orchestrator, prospect-previews source, agentos execution proxy; no live test of any Craft app, REA, or HyperFrames; no external validation of vendor claims; Remotion license terms.
 
